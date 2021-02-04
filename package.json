@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js postcss tailwind.css -o public/styles/tailwind.css"
   },
   "author": "Luis FLores",
   "license": "ISC",
