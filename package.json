@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js postcss tailwind.css -o public/styles/tailwind.css"
+    "start": "nodemon app.js",
+    "postcss:build": "postcss tailwind.pcss -o public/styles/tailwind.css",
+    "prestart": "npm run postcss:build",
+    "prebuild": "npm run postcss:build -- --env=production"
   },
   "author": "Luis FLores",
   "license": "ISC",
