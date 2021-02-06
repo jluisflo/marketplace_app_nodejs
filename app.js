@@ -6,6 +6,7 @@ const expressHbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 //end imports
 
+
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,8 +20,8 @@ app.set('views', 'views');
 
 
 //routes
-const shopRoute = require('./routes/shop-route');
-const adminRoute = require('./routes/admin-route');
+const shopRoute = require('./routes/shop.route');
+const adminRoute = require('./routes/admin.route');
 //end routes
 
 

@@ -1,0 +1,27 @@
+<div class="flex justify-center">
+    <form action="/admin/{{#if edit}}edit-product{{else}}add-product{{/if}}" method="POST" class="w-6/12 my-6">
+        <div class="text-3xl text-gray-500 my-6"> {{#if edit}} Edit {{else}} Add {{/if}} Product</div>
+
+        <input type="text" name="id" class="hidden" placeholder="enter name product" value="{{ product.id }}"
+            class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" />
+
+        <label>Name</label>
+        <input type="text" name="name" placeholder="enter name product" value="{{ product.name }}"
+            class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" /><br /><br />
+
+        <label>Description</label>
+        <input type="text" name="description" placeholder="enter description product" value="{{ product.description }}"
+            class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" /><br /><br />
+
+        <label>Price</label>
+        <input type="number" name="price" min="0.00" placeholder="enter price product" value="{{ product.price }}"
+            class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" /><br /><br />
+
+        <label>Image</label>
+        <input type="text" name="image" placeholder="enter image link" value="{{ product.image }}"
+            class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" /><br /><br />
+
+        <button type="submit" class="bg-gray-500 text-white py-4 px-16 rounded-full">{{#if edit}} Edit {{else}} Save
+            {{/if}}</button>
+    </form>
+</div>

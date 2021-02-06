@@ -1,21 +1,26 @@
-const ProductModel = require('../models/product-model');
+const ProductModel = require('../models/product.model');
 
 exports.formAddProduct = (request, response, next) => {
-  response.status(200).render('admin/add-product');
+
+  response.render('admin/form-product');
 };
 
-exports.addProduct = (request, response, next) => {
+exports.formEditProduct = (request, response, next) => {
 
-  let product = new ProductModel(request.body.name, request.body.description, request.body.price);
+  response.render('admin/form-product', { product: ProductModel.findById(request.params.idProduct), edit: true });
+};
+
+exports.postAddProduct = (request, response, next) => {
+
+  let product = new ProductModel(request.body.name, request.body.description, request.body.price, request.body.image);
   product.save();
 
   response.redirect('/products');
 };
 
-exports.updateProduct = (request, response, next) => {
-  //logic
-};
+exports.postUpdateProduct = (request, response, next) => {
 
-exports.deleteProduct = (request, response, next) => {
-  //logic
+  ProductModel.update(request.body.id, request.body.name, request.body.description, request.body.price, request.body.image);
+  response.redirect('/cart');
+
 };
