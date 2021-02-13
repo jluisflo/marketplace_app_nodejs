@@ -1,8 +1,15 @@
 <div class="flex justify-center">
-    <form action="/admin/{{#if edit}}edit-product{{else}}add-product{{/if}}" method="POST" class="w-6/12 my-6">
-        <div class="text-3xl text-gray-500 my-6"> {{#if edit}} Edit {{else}} Add {{/if}} Product</div>
+    <form
+        action="/admin/{{#if add}}add-product{{/if}}{{#if edit}}edit-product{{/if}}{{#if delete}}delete-product{{/if}}"
+        method="POST" class="w-6/12 my-6">
 
-        <input type="text" name="id" class="hidden" placeholder="enter name product" value="{{ product.id }}"
+        <div class="text-3xl text-gray-500 my-6">
+            {{#if add}} Add Product {{/if}}
+            {{#if edit}} Edit Product {{/if}}
+            {{#if delete}} Delete Product {{/if}}
+        </div>
+
+        <input type="text" name="id" class="hidden" placeholder="enter name product" value="{{ product._id }}"
             class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" />
 
         <label>Name</label>
@@ -21,7 +28,10 @@
         <input type="text" name="image" placeholder="enter image link" value="{{ product.image }}"
             class="flex items-center w-full h-12 px-4 bg-gray-200 mt-2 rounded-full focus:outline-none focus:ring-2" /><br /><br />
 
-        <button type="submit" class="bg-gray-500 text-white py-4 px-16 rounded-full">{{#if edit}} Edit {{else}} Save
-            {{/if}}</button>
+        <button type="submit" class="bg-gray-500 text-white py-4 px-16 rounded-full">
+            {{#if add}} Save Product {{/if}}
+            {{#if edit}} Edit Product {{/if}}
+            {{#if delete}} Delete Product {{/if}}
+        </button>
     </form>
 </div>

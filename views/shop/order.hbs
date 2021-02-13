@@ -1,0 +1,67 @@
+<div class="flex justify-center my-6">
+    <div class="flex flex-col w-full p-8 text-gray-800 bg-white shadow-lg pin-r pin-y md:w-4/5 lg:w-4/5 rounded">
+        <div class="flex-1">
+
+            {{#each orders}}
+            <table class="w-full text-sm lg:text-base" cellspacing="0">
+                <thead>
+                    <tr class="h-12 uppercase">
+                        <th class="text-left">Order # {{_id}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <table class="w-full text-sm lg:text-base" cellspacing="0">
+                            <thead>
+                                <tr class="h-12 uppercase">
+                                    <th class="text-left">Product</th>
+                                    <th class="lg:text-right text-left pl-5 lg:pl-0">
+                                        <span class="lg:hidden" title="Quantity">Qtd</span>
+                                        <span class="hidden lg:inline">Quantity</span>
+                                        <span class="hidden lg:inline">Total</span>
+                                    </th>
+                                    <th class="hidden text-right md:table-cell">Unit price</th>
+                                    <th class="text-right">Total price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each cart.items}}
+                                <tr>
+                                    <td>
+                                        <p class="mb-2">{{name}}</p>
+                                    </td>
+                                    <td class="hidden text-right md:table-cell">
+                                        <span class="text-sm lg:text-base font-medium">
+                                            {{quantity}}
+                                        </span>
+                                    </td>
+                                    <td class="hidden text-right md:table-cell">
+                                        <span class="text-sm lg:text-base font-medium">
+                                            {{price}}
+                                        </span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span class="text-sm lg:text-base font-medium">
+                                            {{subtotal}}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {{/each}}
+
+                                <tr class="h-12 uppercase">
+                                    <th class="text-left"> <span class="font-black">Total: {{cart.total}}</span>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+            {{/each}}
+
+        </div>
+    </div>
+</div>
+</div>
