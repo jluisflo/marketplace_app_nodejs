@@ -41,7 +41,7 @@ const server = http.createServer(app);
 
 
 //opening connection mongoDB
-mongoose.connect('mongodb+srv://node_app:admin@cluster0.n0fny.mongodb.net/shop?retryWrites=true&w=majority')
+mongoose.connect('')
     .then(res => {
         console.log('Connected to database!');
         server.listen(3000);
