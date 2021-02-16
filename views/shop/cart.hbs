@@ -29,13 +29,13 @@
                         </td>
                         <td class="hidden pb-4 md:table-cell">
                             <a href="#">
-                                <img src="{{image}}" class="w-20 rounded" alt="Thumbnail">
+                                <img src="{{productId.image}}" class="w-20 rounded" alt="Thumbnail">
                             </a>
                         </td>
                         <td>
-                            <p class="mb-2">{{_id}}</p>
+                            <p class="mb-2">{{productId.name}}</p>
                         </td>
-                        <td class="justify-center md:justify-end md:flex mt-6">
+                        <td class="justify-center md:justify-end md:flex mt-10">
                             <div class="w-20 h-10">
                                 <div class="relative flex flex-row w-full h-8">
                                     <input type="number" value="{{quantity}}"
@@ -45,7 +45,7 @@
                         </td>
                         <td class="hidden text-right md:table-cell">
                             <span class="text-sm lg:text-base font-medium">
-                                {{price}}
+                                {{productId.price}}
                             </span>
                         </td>
                         <td class="text-right">

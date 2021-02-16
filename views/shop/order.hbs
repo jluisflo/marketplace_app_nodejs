@@ -26,10 +26,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each cart.items}}
+                                {{#each products.items}}
                                 <tr>
                                     <td>
-                                        <p class="mb-2">{{name}}</p>
+                                        <p class="mb-2">{{productId.name}}</p>
                                     </td>
                                     <td class="hidden text-right md:table-cell">
                                         <span class="text-sm lg:text-base font-medium">
@@ -38,10 +38,10 @@
                                     </td>
                                     <td class="hidden text-right md:table-cell">
                                         <span class="text-sm lg:text-base font-medium">
-                                            {{price}}
+                                            {{productId.price}}
                                         </span>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="hidden text-right md:table-cell">
                                         <span class="text-sm lg:text-base font-medium">
                                             {{subtotal}}
                                         </span>
@@ -50,7 +50,7 @@
                                 {{/each}}
 
                                 <tr class="h-12 uppercase">
-                                    <th class="text-left"> <span class="font-black">Total: {{cart.total}}</span>
+                                    <th class="text-left"> <span class="font-black">Total: {{total}}</span>
                                     </th>
                                 </tr>
                             </tbody>

@@ -2,67 +2,82 @@ const ProductModel = require('../models/product.model');
 const UserModel = require('../models/user.model');
 const OrderModel = require('../models/order.model');
 
-exports.getHome = (request, response, next) => {
-
-    response.render('shop/home');
-};
+exports.getHome = (request, response, next) => response.render('shop/home');
 
 exports.getProducts = (request, response, next) => {
 
-    ProductModel.fetchAll()
+    ProductModel.find()
         .then(products => {
-            response.render('shop/products', { products: products });
+
+            response.render('shop/products', { products: JSON.parse(JSON.stringify(products)) });
         })
         .catch(err => console.log(err));
 }
 
 exports.findProduct = (request, response, next) => {
-    ProductModel.find(request.params.idProduct)
+    ProductModel.findById(request.params.idProduct)
         .then(product => {
-            response.render('shop/detail', { product: product });
+            response.render('shop/detail', { product: JSON.parse(JSON.stringify(product)) });
         })
         .catch(err => console.log(err));
 }
 
 exports.postAddProductToCart = (request, response, next) => {
 
-    ProductModel.find(request.body.idProduct)
-        .then(pro => {
-            request.user.addProductToCart(pro)
-            response.redirect('/cart');
-        });
+    UserModel.findById(request.user)
+        .then(user => {
 
+            let cartProductIndex = -1;
+            let quantity = 1;
+            const productId = request.body.productId;
+
+            if (user.cart) {
+                //searching if exist product in cart
+                cartProductIndex = user.cart.items.findIndex(item => item.productId.toString() === productId);
+            } else {
+                user.cart = { items: [] }
+            }
+
+            const updatedCartItems = [...user.cart.items];
+
+            if (cartProductIndex >= 0) { //exist product
+                quantity = user.cart.items[cartProductIndex].quantity + 1;
+                updatedCartItems[cartProductIndex].quantity = quantity;
+            } else {
+                updatedCartItems.push({
+                    productId: productId,
+                    quantity: quantity,
+                });
+            }
+            user.cart.items = updatedCartItems;
+
+            return user.save();
+        })
+        .then(() => {
+            console.log('added to cart')
+            response.redirect('/cart');
+        })
+        .catch(err => console.log(err));
 }
+
 
 exports.getCart = (request, response, next) => {
 
-    UserModel.find(request.user.username) //get update data
+    UserModel.findById(request.user).populate('cart.items.productId')
         .then(user => {
 
-            if (user.cart) {
+            let items = JSON.parse(JSON.stringify(user.cart.items));
+            items.map(item => {
+                item.subtotal = item.quantity * item.productId.price;
+                return item;
+            });
 
-                let carItems = user.cart.items;
-                const productIdInCart = carItems.map(i => { return i.productId })
+            let total = 0;
+            items.forEach(item => {
+                total += item.subtotal;
+            });
 
-                ProductModel.findIn(productIdInCart).then(pro => {
-
-                    let productsInCart = [...pro];
-                    let total = 0;
-                    productsInCart = productsInCart.map(product => {
-                        let carItem = carItems.find(item => item.productId.toString() === product._id.toString());
-                        product.quantity = carItem.quantity;
-                        product.subtotal = carItem.quantity * product.price;
-                        total += product.subtotal;
-                        return product;
-                    });
-
-                    response.render('shop/cart', { items: productsInCart, total: total });
-
-                }).catch(err => console.log(err));
-            } else {
-                response.render('shop/cart', { items: [] });
-            }
-
+            response.render('shop/cart', { items: items, total: total })
         })
         .catch(err => console.log(err));
 };
@@ -70,66 +85,77 @@ exports.getCart = (request, response, next) => {
 
 exports.postDeleteProductToCart = (request, response, next) => {
 
-    let id = request.body.productId;
+    let productId = request.body.productId;
+    let userId = request.user;
 
-    UserModel.find(request.user.username) //get update data
-        .then(result => {
-
-            let user = new User(result.username, result.email, result.cart, result._id)
+    UserModel.findById(userId) //get update data
+        .then(user => {
 
             let updateItems = [...user.cart.items];
-            let findProductIndex = updateItems.findIndex(proItem => proItem.productId.toString() === id);
+            let findProductIndex = updateItems.findIndex(proItem => proItem.productId.toString() === productId);
             updateItems.splice(findProductIndex, 1);
 
             user.cart.items = updateItems;
 
-            user.update();
-            response.redirect('/cart');
+            return user.save();
         })
+        .then(() => response.redirect('/cart'))
         .catch(err => console.log(err));
 }
 
 exports.postAddOrder = (request, response, next) => {
 
-    UserModel.find(request.user.username) //get update data
+
+    UserModel.findById(request.user)
         .then(user => {
 
-            let carItems = user.cart.items;
-            const productIdInCart = carItems.map(i => { return i.productId })
+            let cartItems = [...user.cart.items];
 
-            ProductModel.findIn(productIdInCart).then(pro => {
+            const order = new OrderModel({
+                user: user._id,
+                products: { items: cartItems }
+            });
 
-                let productsInCart = [...pro];
-                let total = 0;
-                productsInCart = productsInCart.map(product => {
-                    let carItem = carItems.find(item => item.productId.toString() === product._id.toString());
-                    product.quantity = carItem.quantity;
-                    product.subtotal = carItem.quantity * product.price;
-                    total += product.subtotal;
-                    return product;
-                });
+            return order.save()
+                .then(() => {
 
-                let order = new OrderModel({ _id: user._id, username: user.username }, { total: total, items: productsInCart });
+                    user.cart = { items: [] };
 
-                //order save and clean cart
-
-                order.save().then(result => {
-                    return UserModel.cleanCart(user.username)
-                        .then(() => {
-                            response.redirect('/orders')
-                        })
+                    return user.save()
+                        .then(response.redirect('/orders'))
                         .catch(err => console.log(err));
+
                 })
-
-            }).catch(err => console.log(err));
-
+                .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
 }
 
 exports.getOrders = (request, response, next) => {
-    OrderModel.fetchAll(request.user.username).then(result => {
 
-        response.render('shop/order', { orders: result });
-    }).catch();
+    OrderModel.find({ user: request.user })
+        .populate('products.items.productId')
+        .then(result => {
+
+            let orders = [...JSON.parse(JSON.stringify(result))];
+
+            orders = orders.map(order => {
+
+                let total = 0;
+                let items = [...order.products.items];
+
+                order.products.items = items.map(item => {
+                    item.subtotal = item.quantity * item.productId.price;
+                    total += item.subtotal;
+                    return item
+                })
+
+                order.total = total;
+                order.products.items = items;
+                return order;
+            });
+
+            response.render('shop/order', { orders: JSON.parse(JSON.stringify(orders)) })
+        })
+        .catch(err => console.log(err));
 }
