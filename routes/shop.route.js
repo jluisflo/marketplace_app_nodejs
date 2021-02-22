@@ -2,9 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 
-const shopController = require('../controllers/shop-controller');
+const shopController = require('../controllers/shop.controller');
 
 router.get('/', shopController.getHome);
+
+router.get('/login', shopController.getLogin);
 
 router.get('/home', shopController.getHome);
 

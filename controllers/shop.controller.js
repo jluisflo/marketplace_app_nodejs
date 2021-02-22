@@ -4,6 +4,8 @@ const OrderModel = require('../models/order.model');
 
 exports.getHome = (request, response, next) => response.render('shop/home');
 
+exports.getLogin = (request, response, next) => response.render('login');
+
 exports.getProducts = (request, response, next) => {
 
     ProductModel.find()
